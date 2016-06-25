@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" ng-app="myApp" class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>My AngularJS App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="app.css">
+    <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+</head>
+
+<body ng-controller="MyAppCtrl">
+    <!-- my code -->
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" ng-click="showActive()">Brand</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#" ng-click="showActive()">Active <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">History</a></li>
+                    <li class="bg-danger"><a href="#">Examine</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    <div class="container">
+        <form>
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control" placeholder="Search for a word ar add one..." ng-model="query">
+                <span class="input-group-btn">
+											<button ng-click="addWord()" class="btn btn-success" type="button">Search/Add</button>
+										</span>
+            </div>
+        </form>
+        <br>
+        <div class="sort well well-sm">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="alphabetSort" id="" value="option1" checked> A-Z
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="alphabetSort" id="" value="option2">Z-A
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="timeSort" id="" value="option1" checked>New First
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="timeSort" id="" value="option2">Old First
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="repeatSort" id="" value="option1" checked>Green to Red
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="repeatSort" id="" value="option2">Red to Green
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="list-group">
+            <!-- <a ng-repeat="w in words | filter:query | archive:inArchive() | needRepeat:wordsNeedRepeat() " href="#" class="list-group-item"> -->
+            <div ng-repeat="w in words | filter:query | archive:inArchive() " href="#" class="list-group-item" ng-click="showTranslate()">
+                <a href="#">{{w.value}}</a>
+                <span class="labels">
+            <span class="label label-info">Added: {{w.addDate  | date : "dd.MM.yyyy"}}</span>
+                <span class="label label-{{getClass(w)}}">Repeated: {{getUnrepeatedDaysNum(w)}} day(s) ago.</span>
+                </span>
+                <div ng-class="{{w.shTr}}"></div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            Active: {{getActiveWordsCount()}}. Needs to repeat: {{getUnrepeatedWordsCount()}}. Archive: {{getInArchiveWordsCount()}}. All: {{words.length}}
+        </div>
+    </footer>
+    <!-- /my code -->
+    <!--     <ul class="menu">
+        <li><a href="#!/view1">view1</a></li>
+        <li><a href="#!/view2">view2</a></li>
+    </ul> -->
+    <!--[if lt IE 7]>
+			<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+	<![endif]-->
+    <!--     <div ng-view></div>
+    <div>Angular seed app: v<span app-version></span></div> -->
+    <!-- In production use:
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+	-->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="app.js"></script>
+    <script src="view1/view1.js"></script>
+    <script src="view2/view2.js"></script>
+    <script src="components/version/version.js"></script>
+    <script src="components/version/version-directive.js"></script>
+    <script src="components/version/interpolate-filter.js"></script>
+</body>
+
+</html>
