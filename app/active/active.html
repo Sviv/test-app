@@ -1,0 +1,10 @@
+<div class="list-group" ng-controller="ActiveCtrl">
+    <div ng-repeat="w in words" href="#" class="list-group-item">
+        <a href="#">{{w.value}}</a>
+        <span class="labels">
+            <span class="label label-info">Added: {{w.addDate  | date : "dd.MM.yyyy"}}</span>        
+        <!-- <span class="label label-{{getClass(w)}}">Repeated: {{getUnrepeatedDaysNum(w)}} day(s) ago.</span>
+        </span>
+         -->
+    </div>
+</div>

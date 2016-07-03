@@ -1,0 +1,9 @@
+<div class="list-group">
+    <div ng-repeat="w in $ctrl.list" href="#" class="list-group-item">
+        <a href="#">{{w.value}}</a>
+        <span class="labels">
+            <!-- <span class="label label-info">Added: {{w.addDate  | date : "dd.MM.yyyy"}}</span> -->
+        <span class="label label-{{$ctrl.getClass(w)}}">Repeated: {{$ctrl.getUnrepeatedDaysNum(w)}} day(s) ago.</span>
+        </span>
+    </div>
+</div>

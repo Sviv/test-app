@@ -1,0 +1,19 @@
+[{
+    "value": "word-1",
+    "status": {
+        "date": "2 days ago",
+        "class": "new"
+    }
+}, {
+    "value": "word-2",
+    "status": {
+        "date": "2 days ago",
+        "class": "new"
+    }
+}, {
+    "value": "word-3",
+    "status": {
+        "date": "2 days ago",
+        "class": "new"
+    }
+}]

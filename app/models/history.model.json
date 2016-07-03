@@ -1,0 +1,22 @@
+[{
+    "value": "word-1",
+    "addDate": "1465516800000",
+    "status": {
+        "date": "15.12.2018",
+        "class": "new"
+    }
+}, {
+    "value": "word-2",
+    "addDate": "1465516800000",
+    "status": {
+        "date": "15.12.2018",
+        "class": "new"
+    }
+}, {
+    "value": "word-3",
+    "addDate": "1465516800000",
+    "status": {
+        "date": "15.12.2018",
+        "class": "new"
+    }
+}]
