@@ -214,7 +214,7 @@ public class ManagmentSystem {
         }
         try {
             StringBuilder query = new StringBuilder("SELECT wordId, word, creationDate, lastRepeatDate, repeatsCount, status FROM word");
-            if (params != null) {
+            if (params.size() != 0) {
                 prepareDates(params);
                 query.append(" WHERE ");
                 Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
@@ -235,6 +235,7 @@ public class ManagmentSystem {
                     }
                 }
             }
+            logger.debug("query: " + query.toString());
             logger.debug("query: " + stmt.toString());
             rs = stmt.executeQuery(query.toString());
             result = convert(rs);
