@@ -9,10 +9,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static org.wordscaster.logic.ResultSetConverter.convert;
 
@@ -44,14 +41,16 @@ public class ManagmentSystem {
     public JSONArray addWord(Word word) {
         JSONArray result = new JSONArray();
         JSONObject error = new JSONObject();
-
         try {
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO word (word, creationDate, lastRepeatDate, repeatCounts, status) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            if (word.getWord().isEmpty()) {
+                throw new IllegalArgumentException("Word can't be empty");
+            }
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO word (word, creationDate, lastRepeatDate, repeatsCount, status) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             stmt.setString(1, word.getWord());
             stmt.setString(2, dateFormat.format(word.getCreationDate()));
             stmt.setString(3, dateFormat.format(word.getLastRepeatDate()));
-            stmt.setInt(4, word.getRepeatCounts());
+            stmt.setInt(4, word.getRepeatsCount());
             stmt.setString(5, word.getStatus());
             logger.debug("query: " + stmt.toString());
             stmt.execute();
@@ -60,7 +59,7 @@ public class ManagmentSystem {
 
             return result;
 
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException | IllegalArgumentException e) {
             logger.error("Error message: " + e.getMessage());
             e.printStackTrace();
             error.put("error", e.getMessage());
@@ -71,18 +70,23 @@ public class ManagmentSystem {
         }
     }
 
-    public JSONArray findWordById(int id) {
+    public JSONArray findWordById(String stringId) {
         JSONArray result = new JSONArray();
         JSONObject error = new JSONObject();
         logger.debug("findWordById:");
+        logger.debug("id: " + stringId);
         try {
+            if (stringId == null || stringId.isEmpty()) {
+                throw new IllegalArgumentException("wordId can't be empty");
+            }
+            int id = Integer.parseInt(stringId);
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM word WHERE wordId = ?");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
             logger.debug("query: " + stmt.toString());
             result = convert(rs);
             return result;
-        } catch (SQLException e) {
+        } catch (SQLException | IllegalArgumentException e) {
             e.printStackTrace();
             logger.error("Error message: " + e.getStackTrace());
             error.put("error", e.getMessage());
@@ -98,11 +102,39 @@ public class ManagmentSystem {
         String id = "";
         logger.debug("modifyWord:");
         for (Map.Entry<String, String> pair : params.entrySet()) {
-            String key = pair.getKey();                      //ключ
-            String value = pair.getValue();                  //значение
+            String key = pair.getKey();
+            String value = pair.getValue();
             logger.debug(key + ": " + value + ";");
         }
+
         try {
+            //Проверяю наличие обязательных параметров
+            String wordId = "";
+            String word = "";
+            String status = "";
+
+            for (Map.Entry<String, String> pair : params.entrySet()) {
+                String key = pair.getKey();
+                String value = pair.getValue();
+                if (key.equals("wordId")) {
+                    wordId = value;
+                }
+                if (key.equals("word")) {
+                    word = value;
+                }
+                if (key.equals("status")) {
+                    status = value;
+                }
+            }
+            if (wordId.isEmpty()) {
+                throw new IllegalArgumentException("wordId can't be empty");
+            }
+            if (word.isEmpty()) {
+                throw new IllegalArgumentException("word can't be empty");
+            }
+            if (status.isEmpty()) {
+                throw new IllegalArgumentException("status can't be empty");
+            }
             StringBuilder query = new StringBuilder("UPDATE word SET ");
             Iterator<Map.Entry<String, String>> iterator = params.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -122,7 +154,7 @@ public class ManagmentSystem {
                 }
             }
             if (id.isEmpty()) {
-                throw new NullPointerException("id is empty");
+                throw new IllegalArgumentException("wordId can't be empty");
             }
             query.append(" WHERE wordId=\'" + id + "\'");
             logger.debug("query: " + query);
@@ -132,7 +164,34 @@ public class ManagmentSystem {
             result.put(error);
             //result = convert(rs);
             return result;
-        } catch (SQLException e) {
+        } catch (SQLException | IllegalArgumentException e) {
+            e.printStackTrace();
+            logger.error("Error message: " + e.getStackTrace());
+            error.put("error", e.getMessage());
+            error.put("status", "fail");
+            result.put(error);
+            return result;
+        }
+    }
+
+    public JSONArray deleteWord(String stringId) {
+        JSONArray result = new JSONArray();
+        JSONObject error = new JSONObject();
+        logger.debug("deleteWord:");
+        logger.debug("id: " + stringId);
+        try {
+            if (stringId == null || stringId.isEmpty()) {
+                throw new IllegalArgumentException("wordId can't be empty");
+            }
+            int id = Integer.parseInt(stringId);
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM word WHERE wordId = ?");
+            stmt.setInt(1, id);
+            stmt.execute();
+            logger.debug("query: " + stmt.toString());
+            error.put("status", "Ok");
+            result.put(error);
+            return result;
+        } catch (SQLException | IllegalArgumentException e) {
             e.printStackTrace();
             logger.error("Error message: " + e.getStackTrace());
             error.put("error", e.getMessage());
@@ -154,7 +213,7 @@ public class ManagmentSystem {
             logger.debug(key + ": " + value + ";");
         }
         try {
-            StringBuilder query = new StringBuilder("SELECT wordId, creationDate, lastRepeatDate, repeatCounts, status FROM word");
+            StringBuilder query = new StringBuilder("SELECT wordId, word, creationDate, lastRepeatDate, repeatsCount, status FROM word");
             if (params != null) {
                 prepareDates(params);
                 query.append(" WHERE ");

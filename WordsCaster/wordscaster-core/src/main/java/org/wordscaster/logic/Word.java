@@ -10,12 +10,13 @@ public class Word {
     private String word;
     private Date creationDate;
     private Date lastRepeatDate;
-    private int repeatCounts;
+    private int repeatsCount;
     private WordStatus status;
 
     public Word() {
         this.status = WordStatus.NEW;
         this.creationDate = new Date();
+        this.repeatsCount = 0;
         this.lastRepeatDate = new Date();
     }
 
@@ -51,12 +52,12 @@ public class Word {
         this.lastRepeatDate = lastRepeatDate;
     }
 
-    public int getRepeatCounts() {
-        return repeatCounts;
+    public int getRepeatsCount() {
+        return repeatsCount;
     }
 
-    public void setRepeatCounts(int repeatCounts) {
-        this.repeatCounts = repeatCounts;
+    public void setRepeatsCount(int repeatsCount) {
+        this.repeatsCount = repeatsCount;
     }
 
     public String getStatus() {

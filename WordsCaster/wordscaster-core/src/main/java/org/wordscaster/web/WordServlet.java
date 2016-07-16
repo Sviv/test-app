@@ -24,19 +24,23 @@ public class WordServlet extends HttpServlet {
         switch (method) {
             case "addWord": {
                 out.print(addWord(req));
-            };
+            }
                 break;
             case "searchWord": {
                 out.print(searchWord(req));
-            };
+            }
                 break;
             case "findWordById": {
                 out.print(findWordById(req));
-            };
+            }
                 break;
             case "modifyWord": {
                 out.print(modifyWord(req));
-            };
+            }
+            break;
+            case "deleteWord": {
+                out.print(deleteWord(req));
+            }
             break;
             default:
                 break;
@@ -53,7 +57,7 @@ public class WordServlet extends HttpServlet {
         return ms.searchWordsByParams(params);
     }
     private JSONArray findWordById(HttpServletRequest req) {
-        int id = prepareId(req);
+        String id = prepareId(req);
         ManagmentSystem ms = new ManagmentSystem();
         return ms.findWordById(id);
     }
@@ -62,11 +66,15 @@ public class WordServlet extends HttpServlet {
         ManagmentSystem ms = new ManagmentSystem();
         return ms.modifyWord(params);
     }
+    private JSONArray deleteWord(HttpServletRequest req) {
+        String id = prepareId(req);
+        ManagmentSystem ms = new ManagmentSystem();
+        return ms.deleteWord(id);
+    }
     private Word prepareWord(HttpServletRequest req) {
         Word word = new Word();
         String wordName = req.getParameter("word");
         word.setWord(wordName);
-        word.setRepeatCounts(Integer.parseInt(req.getParameter("repeatCounts")));
         return word;
     }
     private HashMap<String, String> prepareParams(HttpServletRequest req) {
@@ -77,13 +85,13 @@ public class WordServlet extends HttpServlet {
         addToMap(params, "dateTill", req.getParameter("dateTill"));
         addToMap(params, "translation", req.getParameter("translation"));
         addToMap(params, "lastRepeatDate", req.getParameter("lastRepeatDate"));
-        addToMap(params, "repeatCounts", req.getParameter("repeatCounts"));
+        addToMap(params, "repeatsCount", req.getParameter("repeatsCount"));
         addToMap(params, "status", req.getParameter("status"));
         addToMap(params, "wordId", req.getParameter("wordId"));
         return params;
     }
-    private int prepareId(HttpServletRequest req) {
-        return Integer.parseInt(req.getParameter("wordId"));
+    private String prepareId(HttpServletRequest req) {
+        return req.getParameter("wordId");
     }
     private static void addToMap(HashMap<String, String> params, String paramKey, String paramValue) {
         if (paramValue != null) {
