@@ -17,10 +17,14 @@ public class Config {
     public static String readProperty(String propertyName ) throws IOException {
         Properties prop = new Properties();
         String result = null;
-
-        File catalinaBase = new File(System.getProperty( "catalina.base" )).getAbsoluteFile();
-        File propertyFile = new File(catalinaBase, "conf\\wordscaster.properties");
-        FileInputStream input = new FileInputStream(propertyFile);
+        FileInputStream input = null;
+        try {
+            File catalinaBase = new File(System.getProperty("catalina.base")).getAbsoluteFile();
+            File propertyFile = new File(catalinaBase, "conf\\wordscaster.properties");
+            input = new FileInputStream(propertyFile);
+        } catch (NullPointerException e) {
+            input = new FileInputStream("src\\main\\resources\\wordscaster.properties");
+        }
 
 //        FileInputStream input = new FileInputStream("wordscaster.properties");
 

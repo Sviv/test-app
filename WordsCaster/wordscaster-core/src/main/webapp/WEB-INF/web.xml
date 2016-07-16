@@ -26,6 +26,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>WordServlet</servlet-name>
-        <url-pattern>/addWord</url-pattern>
+        <url-pattern>/wordServlet</url-pattern>
     </servlet-mapping>
 </web-app>

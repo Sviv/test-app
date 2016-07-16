@@ -9,11 +9,16 @@ public class Word {
     private int wordId;
     private String word;
     private Date creationDate;
-    private int status;
-    public Word(){
-        this.status = 1;
+    private Date lastRepeatDate;
+    private int repeatCounts;
+    private WordStatus status;
+
+    public Word() {
+        this.status = WordStatus.NEW;
         this.creationDate = new Date();
+        this.lastRepeatDate = new Date();
     }
+
     public int getWordId() {
         return wordId;
     }
@@ -38,12 +43,43 @@ public class Word {
         this.creationDate = creationDate;
     }
 
-    public int getStatus() {
-        return status;
+    public Date getLastRepeatDate() {
+        return lastRepeatDate;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setLastRepeatDate(Date lastRepeatDate) {
+        this.lastRepeatDate = lastRepeatDate;
+    }
+
+    public int getRepeatCounts() {
+        return repeatCounts;
+    }
+
+    public void setRepeatCounts(int repeatCounts) {
+        this.repeatCounts = repeatCounts;
+    }
+
+    public String getStatus() {
+        return status.toString();
+    }
+
+    public void setStatus(String stringStatus) {
+        switch (stringStatus) {
+            case "new":
+                this.status = WordStatus.NEW;
+                break;
+            case "repeat":
+                this.status = WordStatus.REPEAT;
+                break;
+            case "unknown":
+                this.status = WordStatus.UNKNOWN;
+                break;
+            case "done":
+                this.status = WordStatus.DONE;
+                break;
+            default:
+                break;
+        }
     }
 
     public String toString() {

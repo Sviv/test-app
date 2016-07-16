@@ -1,5 +1,6 @@
 package org.wordscaster.web;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.wordscaster.logic.ManagmentSystem;
 import org.wordscaster.logic.Word;
@@ -10,26 +11,84 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
 /**
  * Created by A on 27.06.2016.
  */
 public class WordServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-            resp.setContentType("application/json");
-            PrintWriter out = resp.getWriter();
-            out.print(addWord(req));
+        resp.setContentType("application/json");
+        String method = req.getParameter("method");
+        PrintWriter out = resp.getWriter();
+        switch (method) {
+            case "addWord": {
+                out.print(addWord(req));
+            };
+                break;
+            case "searchWord": {
+                out.print(searchWord(req));
+            };
+                break;
+            case "findWordById": {
+                out.print(findWordById(req));
+            };
+                break;
+            case "modifyWord": {
+                out.print(modifyWord(req));
+            };
+            break;
+            default:
+                break;
+        }
+    }
+    private JSONArray addWord(HttpServletRequest req) {
+        Word word = prepareWord(req);
+        ManagmentSystem ms = new ManagmentSystem();
+        return ms.addWord(word);
+    }
+    private JSONArray searchWord(HttpServletRequest req) {
+        HashMap<String, String> params = prepareParams(req);
+        ManagmentSystem ms = new ManagmentSystem();
+        return ms.searchWordsByParams(params);
+    }
+    private JSONArray findWordById(HttpServletRequest req) {
+        int id = prepareId(req);
+        ManagmentSystem ms = new ManagmentSystem();
+        return ms.findWordById(id);
+    }
+    private JSONArray modifyWord(HttpServletRequest req) {
+        HashMap<String, String> params = prepareParams(req);
+        ManagmentSystem ms = new ManagmentSystem();
+        return ms.modifyWord(params);
     }
     private Word prepareWord(HttpServletRequest req) {
         Word word = new Word();
         String wordName = req.getParameter("word");
         word.setWord(wordName);
+        word.setRepeatCounts(Integer.parseInt(req.getParameter("repeatCounts")));
         return word;
     }
-    private JSONObject addWord(HttpServletRequest req) {
-        Word word = prepareWord(req);
-        ManagmentSystem ms = new ManagmentSystem();
-        return ms.addWord(word);
+    private HashMap<String, String> prepareParams(HttpServletRequest req) {
+        HashMap<String, String> params = new HashMap<String, String>();
+        addToMap(params, "word", req.getParameter("word"));
+        addToMap(params, "creationDate", req.getParameter("creationDate"));
+        addToMap(params, "dateFrom", req.getParameter("dateFrom"));
+        addToMap(params, "dateTill", req.getParameter("dateTill"));
+        addToMap(params, "translation", req.getParameter("translation"));
+        addToMap(params, "lastRepeatDate", req.getParameter("lastRepeatDate"));
+        addToMap(params, "repeatCounts", req.getParameter("repeatCounts"));
+        addToMap(params, "status", req.getParameter("status"));
+        addToMap(params, "wordId", req.getParameter("wordId"));
+        return params;
+    }
+    private int prepareId(HttpServletRequest req) {
+        return Integer.parseInt(req.getParameter("wordId"));
+    }
+    private static void addToMap(HashMap<String, String> params, String paramKey, String paramValue) {
+        if (paramValue != null) {
+            params.put(paramKey, paramValue);
+        }
     }
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         processRequest(req, resp);
